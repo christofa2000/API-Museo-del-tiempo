@@ -1,26 +1,73 @@
 @import "tailwindcss";
 
+/* 🎨 Definí tu paleta con @theme (v4) */
+@theme {
+  --color-cosmic-900: #0a0b1a;
+  --color-cosmic-800: #12132b;
+  --color-cosmic-700: #1b1e3a;
+  --color-cosmic-500: #6a5acd;
+  --color-cosmic-300: #b8a8ff;
+}
+
+/* Estilos base */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: dark;
 }
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  @apply bg-cosmic-900 text-white antialiased;
+}
+
+.gradient-grid {
+  background-image: radial-gradient(
+      circle at 20% 20%,
+      rgba(106, 90, 205, 0.15),
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 80% 0%,
+      rgba(184, 168, 255, 0.12),
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at 50% 100%,
+      rgba(106, 90, 205, 0.18),
+      transparent 45%
+    );
+}
+/* Suavizar scroll a secciones */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Línea eléctrica (borde inferior animado) */
+.header-electric {
+  position: relative;
+}
+.header-electric::after {
+  content: "";
+  position: absolute;
+  left: -20%;
+  right: -20%;
+  bottom: -1px;
+  height: 2px;
+  /* Gradiente con brillo que se “mueve” */
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--color-cosmic-300) 20%,
+    var(--color-cosmic-500) 50%,
+    var(--color-cosmic-300) 80%,
+    transparent 100%
+  );
+  filter: drop-shadow(0 0 6px var(--color-cosmic-500));
+  animation: electric-run 3s linear infinite;
+  opacity: 0.8;
+}
+@keyframes electric-run {
+  0% {
+    transform: translateX(-10%);
+  }
+  100% {
+    transform: translateX(10%);
+  }
 }
