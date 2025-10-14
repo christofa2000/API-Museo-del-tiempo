@@ -4,8 +4,7 @@ import React from "react";
 // Mock de next/image
 jest.mock("next/image", () => ({
   __esModule: true,
-  default: (props: any) => {
-    // eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text
+  default: (props: Record<string, unknown>) => {
     return React.createElement("img", props);
   },
 }));
@@ -27,20 +26,122 @@ jest.mock("next/navigation", () => ({
 // Mock de framer-motion para evitar timers en tests
 jest.mock("framer-motion", () => ({
   motion: {
-    div: ({ children, ...props }: any) =>
-      React.createElement("div", props, children),
-    button: ({ children, ...props }: any) =>
-      React.createElement("button", props, children),
-    span: ({ children, ...props }: any) =>
-      React.createElement("span", props, children),
-    li: ({ children, ...props }: any) =>
-      React.createElement("li", props, children),
-    section: ({ children, ...props }: any) =>
-      React.createElement("section", props, children),
-    header: ({ children, ...props }: any) =>
-      React.createElement("header", props, children),
+    div: ({
+      children,
+      whileHover,
+      whileTap,
+      layoutId,
+      initial,
+      animate,
+      transition,
+      ...props
+    }: {
+      children?: React.ReactNode;
+      whileHover?: unknown;
+      whileTap?: unknown;
+      layoutId?: unknown;
+      initial?: unknown;
+      animate?: unknown;
+      transition?: unknown;
+      [key: string]: unknown;
+    }) => React.createElement("div", props, children),
+    button: ({
+      children,
+      whileHover,
+      whileTap,
+      layoutId,
+      initial,
+      animate,
+      transition,
+      ...props
+    }: {
+      children?: React.ReactNode;
+      whileHover?: unknown;
+      whileTap?: unknown;
+      layoutId?: unknown;
+      initial?: unknown;
+      animate?: unknown;
+      transition?: unknown;
+      [key: string]: unknown;
+    }) => React.createElement("button", props, children),
+    span: ({
+      children,
+      whileHover,
+      whileTap,
+      layoutId,
+      initial,
+      animate,
+      transition,
+      ...props
+    }: {
+      children?: React.ReactNode;
+      whileHover?: unknown;
+      whileTap?: unknown;
+      layoutId?: unknown;
+      initial?: unknown;
+      animate?: unknown;
+      transition?: unknown;
+      [key: string]: unknown;
+    }) => React.createElement("span", props, children),
+    li: ({
+      children,
+      whileHover,
+      whileTap,
+      layoutId,
+      initial,
+      animate,
+      transition,
+      ...props
+    }: {
+      children?: React.ReactNode;
+      whileHover?: unknown;
+      whileTap?: unknown;
+      layoutId?: unknown;
+      initial?: unknown;
+      animate?: unknown;
+      transition?: unknown;
+      [key: string]: unknown;
+    }) => React.createElement("li", props, children),
+    section: ({
+      children,
+      whileHover,
+      whileTap,
+      layoutId,
+      initial,
+      animate,
+      transition,
+      ...props
+    }: {
+      children?: React.ReactNode;
+      whileHover?: unknown;
+      whileTap?: unknown;
+      layoutId?: unknown;
+      initial?: unknown;
+      animate?: unknown;
+      transition?: unknown;
+      [key: string]: unknown;
+    }) => React.createElement("section", props, children),
+    header: ({
+      children,
+      whileHover,
+      whileTap,
+      layoutId,
+      initial,
+      animate,
+      transition,
+      ...props
+    }: {
+      children?: React.ReactNode;
+      whileHover?: unknown;
+      whileTap?: unknown;
+      layoutId?: unknown;
+      initial?: unknown;
+      animate?: unknown;
+      transition?: unknown;
+      [key: string]: unknown;
+    }) => React.createElement("header", props, children),
   },
-  AnimatePresence: ({ children }: any) => children,
+  AnimatePresence: ({ children }: { children?: React.ReactNode }) => children,
 }));
 
 // Mock de fetch global
@@ -72,6 +173,50 @@ global.ResizeObserver = jest.fn().mockImplementation(() => ({
   unobserve: jest.fn(),
   disconnect: jest.fn(),
 }));
+
+// Mock de HTMLMediaElement para audio
+Object.defineProperty(HTMLMediaElement.prototype, "play", {
+  writable: true,
+  value: jest.fn().mockImplementation(() => Promise.resolve()),
+});
+
+Object.defineProperty(HTMLMediaElement.prototype, "pause", {
+  writable: true,
+  value: jest.fn(),
+});
+
+Object.defineProperty(HTMLMediaElement.prototype, "load", {
+  writable: true,
+  value: jest.fn(),
+});
+
+// Mock de AudioContext para compatibilidad con Safari
+Object.defineProperty(window, "AudioContext", {
+  writable: true,
+  value: jest.fn().mockImplementation(() => ({
+    createGain: jest.fn(),
+    createOscillator: jest.fn(),
+    createAnalyser: jest.fn(),
+    state: "running",
+    resume: jest.fn().mockResolvedValue(undefined),
+    suspend: jest.fn().mockResolvedValue(undefined),
+    close: jest.fn().mockResolvedValue(undefined),
+  })),
+});
+
+// Mock de webkitAudioContext para Safari
+Object.defineProperty(window, "webkitAudioContext", {
+  writable: true,
+  value: jest.fn().mockImplementation(() => ({
+    createGain: jest.fn(),
+    createOscillator: jest.fn(),
+    createAnalyser: jest.fn(),
+    state: "running",
+    resume: jest.fn().mockResolvedValue(undefined),
+    suspend: jest.fn().mockResolvedValue(undefined),
+    close: jest.fn().mockResolvedValue(undefined),
+  })),
+});
 
 // Cleanup después de cada test
 afterEach(() => {

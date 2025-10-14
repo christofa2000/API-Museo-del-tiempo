@@ -17,6 +17,7 @@ export default function AudioPlayer({ src, title, artist, artUrl }: Props) {
   const [loading, setLoading] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
+  const [userInteracted, setUserInteracted] = useState(false);
 
   useEffect(() => {
     // Detener si cambia el src
@@ -63,16 +64,28 @@ export default function AudioPlayer({ src, title, artist, artUrl }: Props) {
     };
   }, []);
 
-  const handlePlayPause = () => {
+  const handlePlayPause = async () => {
     const el = audioRef.current;
     if (!el) return;
+
+    // Marcar que el usuario ha interactuado (requerido para Safari/iPhone)
+    if (!userInteracted) {
+      setUserInteracted(true);
+    }
 
     if (playing) {
       el.pause();
       setPlaying(false);
     } else {
-      el.play();
-      setPlaying(true);
+      try {
+        // Para Safari/iPhone: requerir interacción del usuario antes de reproducir
+        await el.play();
+        setPlaying(true);
+      } catch (error) {
+        console.warn("Error al reproducir audio:", error);
+        // En caso de error (autoplay bloqueado), mostrar mensaje al usuario
+        setPlaying(false);
+      }
     }
   };
 
@@ -139,7 +152,14 @@ export default function AudioPlayer({ src, title, artist, artUrl }: Props) {
           </div>
         )}
 
-        <audio ref={audioRef} src={src ?? undefined} preload="none" />
+        <audio
+          ref={audioRef}
+          src={src ?? undefined}
+          preload="none"
+          playsInline
+          controls={false}
+          webkit-playsinline="true"
+        />
       </div>
 
       {/* Botón de play/pause */}
