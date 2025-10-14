@@ -113,22 +113,19 @@ export default function ArtworkGrid({
           {items.length > count ? `(de ${items.length})` : ""}
         </p>
 
-        {/* Botón de mezcla aleatoria */}
-        <button
+        {/* Botón de mezcla aleatoria mejorado */}
+        <motion.button
           type="button"
           onClick={reshuffle}
-          className="
-            inline-flex items-center gap-2 rounded-lg
-            border border-white/15 bg-white/10 px-3 py-2 text-sm
-            ring-1 ring-white/10 transition hover:bg-white/20
-            focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40
-          "
+          className="inline-flex items-center gap-2 rounded-xl glass px-4 py-2 text-sm font-medium text-white/90 hover:text-white hover:glass-2 focus-ring transition-all duration-200"
           aria-label="Mostrar otras obras al azar"
           title="Mostrar otras obras al azar"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
         >
-          <Shuffle size={16} />
-          🎲 Otras obras
-        </button>
+          <Shuffle className="w-4 h-4" />
+          <span>🎲 Otras obras</span>
+        </motion.button>
       </div>
 
       <ul
@@ -144,7 +141,7 @@ export default function ArtworkGrid({
               animate="animate"
               exit="exit"
               transition={{ duration: 0.22 }}
-              className="group overflow-hidden rounded-xl border border-white/10 bg-white/5"
+              className="group overflow-hidden rounded-2xl glass hover:glass-2 transition-all duration-300"
             >
               <button
                 type="button"
@@ -152,21 +149,28 @@ export default function ArtworkGrid({
                 onKeyDown={(e) => {
                   if (e.key === "Enter") setSelectedIndex(idx);
                 }}
-                className="block w-full text-left"
+                className="block w-full text-left focus-ring rounded-2xl"
                 aria-label={`Ver en grande: ${a.title}`}
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={a.image ?? "/placeholder.png"}
-                  alt={a.title}
-                  className="h-56 w-full object-cover transition duration-500 group-hover:scale-105"
-                />
-                <div className="space-y-1 p-3">
-                  <h3 className="line-clamp-1 font-semibold">{a.title}</h3>
-                  <p className="text-sm opacity-80">
+                <div className="relative aspect-[4/3] overflow-hidden">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={a.image ?? "/placeholder.png"}
+                    alt={a.title}
+                    className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
+                    loading="lazy"
+                  />
+                  {/* Overlay para mejor legibilidad */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </div>
+                <div className="space-y-2 p-4">
+                  <h3 className="line-clamp-2 font-semibold text-white group-hover:text-white transition-colors">
+                    {a.title}
+                  </h3>
+                  <p className="text-sm text-white/70 line-clamp-1">
                     {a.artist ?? "Artista desconocido"}
                   </p>
-                  <p className="text-xs opacity-60">{a.date}</p>
+                  <p className="text-xs text-white/50">{a.date}</p>
                 </div>
               </button>
             </motion.li>
@@ -193,67 +197,82 @@ export default function ArtworkGrid({
               initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.96 }}
-              transition={{ duration: 0.18 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
             >
               <div
-                className="relative w-full max-w-5xl overflow-hidden rounded-2xl border border-white/15 bg-[#0b0b17]/95 shadow-xl"
+                className="relative w-full max-w-6xl overflow-hidden rounded-3xl glass-2 shadow-[var(--glow-lg)]"
                 onClick={(e) => e.stopPropagation()}
               >
-                {/* Botón cerrar */}
-                <button
+                {/* Botón cerrar mejorado */}
+                <motion.button
                   onClick={() => setSelectedIndex(null)}
-                  className="absolute right-3 top-3 z-10 inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/20 hover:bg-white/20"
+                  className="absolute right-4 top-4 z-10 inline-flex h-10 w-10 items-center justify-center rounded-full glass hover:glass-2 focus-ring transition-all duration-200"
                   aria-label="Cerrar"
-                  title="Cerrar"
+                  title="Cerrar (Escape)"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
                 >
-                  <X size={18} />
-                </button>
+                  <X className="w-5 h-5" />
+                </motion.button>
 
-                {/* Flechas si hay más de una obra */}
+                {/* Flechas mejoradas */}
                 {count > 1 && (
                   <>
-                    <button
+                    <motion.button
                       onClick={goPrev}
-                      className="absolute left-3 top-1/2 z-10 -translate-y-1/2 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/20 hover:bg-white/20"
+                      className="absolute left-4 top-1/2 z-10 -translate-y-1/2 inline-flex h-12 w-12 items-center justify-center rounded-full glass hover:glass-2 focus-ring transition-all duration-200"
                       aria-label="Anterior"
                       title="Anterior (←)"
+                      whileHover={{ scale: 1.1, x: -2 }}
+                      whileTap={{ scale: 0.9 }}
                     >
-                      <ChevronLeft size={20} />
-                    </button>
-                    <button
+                      <ChevronLeft className="w-6 h-6" />
+                    </motion.button>
+                    <motion.button
                       onClick={goNext}
-                      className="absolute right-3 top-1/2 z-10 -translate-y-1/2 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/20 hover:bg-white/20"
+                      className="absolute right-4 top-1/2 z-10 -translate-y-1/2 inline-flex h-12 w-12 items-center justify-center rounded-full glass hover:glass-2 focus-ring transition-all duration-200"
                       aria-label="Siguiente"
                       title="Siguiente (→)"
+                      whileHover={{ scale: 1.1, x: 2 }}
+                      whileTap={{ scale: 0.9 }}
                     >
-                      <ChevronRight size={20} />
-                    </button>
+                      <ChevronRight className="w-6 h-6" />
+                    </motion.button>
                   </>
                 )}
 
                 <div className="grid gap-0 md:grid-cols-2">
                   {/* Imagen grande */}
-                  <div className="relative bg-black/30">
+                  <div className="relative bg-gradient-to-br from-cosmic-900/50 to-cosmic-800/30">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={selected.image ?? "/placeholder.png"}
                       alt={selected.title}
-                      className="h-full w-full max-h-[80vh] object-contain"
+                      className="h-full w-full max-h-[80vh] object-contain p-4"
+                      loading="lazy"
                     />
                   </div>
 
-                  {/* Información de la obra */}
-                  <div className="space-y-3 p-5 md:p-6">
-                    <h3 className="text-xl font-semibold">{selected.title}</h3>
-                    <p className="text-sm opacity-80">
-                      {selected.artist ?? "Artista desconocido"}
-                    </p>
-                    <p className="text-xs opacity-60">{selected.date}</p>
+                  {/* Información de la obra mejorada */}
+                  <div className="space-y-4 p-6 md:p-8">
+                    <div className="space-y-2">
+                      <h3 className="text-2xl font-bold text-white leading-tight">
+                        {selected.title}
+                      </h3>
+                      <p className="text-lg text-white/80 font-medium">
+                        {selected.artist ?? "Artista desconocido"}
+                      </p>
+                      <p className="text-sm text-white/60 font-mono">
+                        {selected.date}
+                      </p>
+                    </div>
 
                     {selected.description && (
-                      <p className="pt-2 text-sm leading-relaxed text-white/85">
-                        {selected.description}
-                      </p>
+                      <div className="pt-4 border-t border-white/10">
+                        <p className="text-sm leading-relaxed text-white/85 text-balance">
+                          {selected.description}
+                        </p>
+                      </div>
                     )}
                   </div>
                 </div>

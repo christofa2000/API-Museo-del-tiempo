@@ -66,22 +66,41 @@ export default function Page() {
   }
 
   return (
-    <section className="space-y-8">
-      <header className="space-y-4">
-        <h1 className="text-3xl font-extrabold tracking-tight">
-          Museo del Tiempo
-        </h1>
-        <p className="max-w-2xl opacity-80">
-          Explorá arte, historia y música según la década. Elegí un período y
-          disfrutá una experiencia audiovisual curada automáticamente.
-        </p>
+    <section className="space-y-12 py-8">
+      <motion.header
+        className="space-y-6"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
+        <div className="space-y-4">
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white text-balance">
+            Museo del Tiempo
+          </h1>
+          <p className="max-w-3xl text-lg text-white/80 leading-relaxed text-balance">
+            Explorá arte, historia y música según la década. Elegí un período y
+            disfrutá una experiencia audiovisual curada automáticamente.
+          </p>
+        </div>
         <DecadePicker value={decade} onChange={setDecade} />
-      </header>
+      </motion.header>
 
       {loading ? (
-        <div className="rounded-xl bg-white/10 p-6 text-sm opacity-80">
-          Cargando…
-        </div>
+        <motion.div
+          className="rounded-2xl glass p-8 text-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
+        >
+          <motion.div
+            className="w-8 h-8 border-2 border-cosmic-500 border-t-transparent rounded-full mx-auto mb-4"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          />
+          <p className="text-white/80 font-medium">
+            Cargando contenido de los {decade}s...
+          </p>
+        </motion.div>
       ) : (
         <AnimatePresence mode="wait">
           {/* key por década para montar/desmontar con animación */}
@@ -94,21 +113,41 @@ export default function Page() {
             className="space-y-8"
           >
             {/* 🎵 Música */}
-            <section id="musica" className="space-y-3">
-              <div className="flex items-center justify-between gap-3">
-                <h2 className="text-xl font-semibold">
+            <section id="musica" className="space-y-4">
+              <div className="flex items-center justify-between gap-4">
+                <h2 className="text-2xl font-bold text-white">
                   Canción aleatoria de los {decade}s
                 </h2>
-                <button
+                <motion.button
                   onClick={rerollSong}
                   disabled={loadingSong}
-                  className="rounded-full px-3 py-1.5 text-sm bg-white/10 hover:bg-white/20 ring-1 ring-white/10 hover:ring-white/20 transition disabled:opacity-50"
+                  className="inline-flex items-center gap-2 rounded-xl glass px-4 py-2 text-sm font-medium text-white/90 hover:text-white hover:glass-2 focus-ring transition-all duration-200 disabled:opacity-50"
                   aria-busy={loadingSong}
                   aria-label="Otra canción"
                   title="Otra canción"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                 >
-                  {loadingSong ? "Buscando…" : "🎲 Otra canción"}
-                </button>
+                  {loadingSong ? (
+                    <>
+                      <motion.div
+                        className="w-4 h-4 border-2 border-current border-t-transparent rounded-full"
+                        animate={{ rotate: 360 }}
+                        transition={{
+                          duration: 1,
+                          repeat: Infinity,
+                          ease: "linear",
+                        }}
+                      />
+                      <span>Buscando…</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>🎲</span>
+                      <span>Otra canción</span>
+                    </>
+                  )}
+                </motion.button>
               </div>
 
               {song ? (
@@ -116,7 +155,7 @@ export default function Page() {
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.25 }}
-                  className="rounded-xl bg-white/10 p-4"
+                  className="space-y-4"
                 >
                   <AudioPlayer
                     src={song.previewUrl ?? undefined}
@@ -124,31 +163,53 @@ export default function Page() {
                     artist={song.artistName}
                     artUrl={song.artworkUrl100?.replace("100x100", "300x300")}
                   />
-                  <div className="mt-2 text-xs opacity-70">
-                    {song.country ? `🌍 País: ${song.country}` : null}
-                    {song.year ? ` · 📅 Año: ${song.year}` : null}
-                    {song.primaryGenreName
-                      ? ` · 🎼 Género: ${song.primaryGenreName}`
-                      : null}
+                  <div className="flex flex-wrap gap-4 text-sm text-white/60">
+                    {song.country && (
+                      <span className="flex items-center gap-1">
+                        <span>🌍</span>
+                        <span>País: {song.country}</span>
+                      </span>
+                    )}
+                    {song.year && (
+                      <span className="flex items-center gap-1">
+                        <span>📅</span>
+                        <span>Año: {song.year}</span>
+                      </span>
+                    )}
+                    {song.primaryGenreName && (
+                      <span className="flex items-center gap-1">
+                        <span>🎼</span>
+                        <span>Género: {song.primaryGenreName}</span>
+                      </span>
+                    )}
                   </div>
                 </motion.div>
               ) : (
-                <div className="rounded-xl bg-white/10 p-4 text-sm opacity-80">
-                  No se encontró una canción para esta década.
-                </div>
+                <motion.div
+                  className="rounded-2xl glass p-6 text-center"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <p className="text-white/80 font-medium">
+                    No se encontró una canción para esta década.
+                  </p>
+                </motion.div>
               )}
             </section>
 
             {/* 📜 Contexto histórico (resumen corto local) */}
-            <section id="historia" className="space-y-3">
-              <h2 className="text-xl font-semibold">Contexto histórico</h2>
+            <section id="historia" className="space-y-4">
+              <h2 className="text-2xl font-bold text-white">
+                Contexto histórico
+              </h2>
               <motion.div
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.25, delay: 0.05 }}
-                className="rounded-xl bg-white/10 p-4"
+                className="rounded-2xl glass p-6"
               >
-                <p className="text-sm leading-relaxed opacity-85">
+                <p className="text-base leading-relaxed text-white/90 text-balance">
                   {decadeSummaries[decade] ??
                     "Información no disponible para esta década."}
                 </p>
@@ -156,8 +217,8 @@ export default function Page() {
             </section>
 
             {/* 🖼️ Arte */}
-            <section id="arte" className="space-y-3">
-              <h2 className="text-xl font-semibold">Obras icónicas</h2>
+            <section id="arte" className="space-y-4">
+              <h2 className="text-2xl font-bold text-white">Obras icónicas</h2>
               <ArtworkGrid items={artworks} />
             </section>
           </motion.div>
