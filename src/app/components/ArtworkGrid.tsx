@@ -191,7 +191,7 @@ export default function ArtworkGrid({
               onClick={() => setSelectedIndex(null)}
             />
             <motion.div
-              className="fixed inset-0 z-50 grid place-items-center p-4"
+              className="fixed inset-0 z-50 grid place-items-center p-4 overflow-hidden"
               role="dialog"
               aria-modal="true"
               initial={{ opacity: 0, scale: 0.96 }}
@@ -200,7 +200,7 @@ export default function ArtworkGrid({
               transition={{ duration: 0.2, ease: "easeOut" }}
             >
               <div
-                className="relative w-full max-w-6xl overflow-hidden rounded-3xl glass-2 shadow-[var(--glow-lg)]"
+                className="relative w-full max-w-6xl max-h-[90vh] overflow-hidden rounded-3xl glass-2 shadow-[var(--glow-lg)]"
                 onClick={(e) => e.stopPropagation()}
               >
                 {/* Botón cerrar mejorado */}
@@ -241,25 +241,25 @@ export default function ArtworkGrid({
                   </>
                 )}
 
-                <div className="grid gap-0 md:grid-cols-2">
+                <div className="grid gap-0 md:grid-cols-2 min-h-0">
                   {/* Imagen grande */}
-                  <div className="relative bg-gradient-to-br from-cosmic-900/50 to-cosmic-800/30">
+                  <div className="relative bg-gradient-to-br from-cosmic-900/50 to-cosmic-800/30 overflow-hidden">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={selected.image ?? "/placeholder.png"}
                       alt={selected.title}
-                      className="h-full w-full max-h-[80vh] object-contain p-4"
+                      className="h-full w-full max-h-[70vh] object-contain p-4"
                       loading="lazy"
                     />
                   </div>
 
                   {/* Información de la obra mejorada */}
-                  <div className="space-y-4 p-6 md:p-8">
+                  <div className="space-y-4 p-6 md:p-8 overflow-y-auto">
                     <div className="space-y-2">
-                      <h3 className="text-2xl font-bold text-white leading-tight">
+                      <h3 className="text-2xl font-bold text-white leading-tight break-words">
                         {selected.title}
                       </h3>
-                      <p className="text-lg text-white/80 font-medium">
+                      <p className="text-lg text-white/80 font-medium break-words">
                         {selected.artist ?? "Artista desconocido"}
                       </p>
                       <p className="text-sm text-white/60 font-mono">
@@ -269,7 +269,7 @@ export default function ArtworkGrid({
 
                     {selected.description && (
                       <div className="pt-4 border-t border-white/10">
-                        <p className="text-sm leading-relaxed text-white/85 text-balance">
+                        <p className="text-sm leading-relaxed text-white/85 text-balance break-words">
                           {selected.description}
                         </p>
                       </div>

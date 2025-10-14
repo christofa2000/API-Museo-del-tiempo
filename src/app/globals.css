@@ -106,23 +106,35 @@ body {
       transparent 45%
     );
 }
-/* Suavizar scroll a secciones */
+/* Anti-overflow global y barra vertical estable */
 html {
+  overflow-y: scroll;
+  scrollbar-gutter: stable both-edges;
   scroll-behavior: smooth;
+}
+html,
+body {
+  overflow-x: clip; /* mejor que hidden: evita crear un scroll container nuevo */
+}
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 /* Línea eléctrica (borde inferior animado) */
 .header-electric {
   position: relative;
+  overflow: hidden; /* Contener la animación dentro del header */
 }
 .header-electric::after {
   content: "";
   position: absolute;
-  left: -20%;
-  right: -20%;
+  left: 0;
+  right: 0;
   bottom: -1px;
   height: 2px;
-  /* Gradiente con brillo que se “mueve” */
+  /* Gradiente con brillo que se "mueve" */
   background: linear-gradient(
     90deg,
     transparent 0%,

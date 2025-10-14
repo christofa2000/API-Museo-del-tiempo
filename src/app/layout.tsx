@@ -11,9 +11,11 @@ export const metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="es">
-      <body className="min-h-dvh gradient-grid">
+      <body className="min-h-dvh gradient-grid overflow-x-hidden">
         <Header />
-        <main className="mx-auto max-w-6xl px-4 pb-12 pt-6">{children}</main>
+        <main className="mx-auto max-w-6xl px-4 pb-12 pt-6 w-full">
+          {children}
+        </main>
       </body>
     </html>
   );

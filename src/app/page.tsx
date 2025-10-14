@@ -66,7 +66,7 @@ export default function Page() {
   }
 
   return (
-    <section className="space-y-12 py-8">
+    <section className="space-y-12 py-8 w-full overflow-x-hidden">
       <motion.header
         className="space-y-6"
         initial={{ opacity: 0, y: 20 }}
@@ -75,11 +75,11 @@ export default function Page() {
       >
         <div className="space-y-4">
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white text-balance">
-            Museo del Tiempo
+            🕰️ Museo del Tiempo
           </h1>
           <p className="max-w-3xl text-lg text-white/80 leading-relaxed text-balance">
-            Explorá arte, historia y música según la década. Elegí un período y
-            disfrutá una experiencia audiovisual curada automáticamente.
+            Del vinilo al pixel: elegí una época y descubrí su banda sonora, sus
+            obras icónicas y el contexto que la definió
           </p>
         </div>
         <DecadePicker value={decade} onChange={setDecade} />
