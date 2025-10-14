@@ -115,6 +115,7 @@ export async function artByDecade(decadeStart: number) {
     "date_start",
     "date_end",
     "image_id",
+    "description", // 👈 agregado
   ].join(",");
 
   const url =
@@ -124,7 +125,16 @@ export async function artByDecade(decadeStart: number) {
     `&limit=100`;
 
   const { data } = await axios.get(url);
-  const base = (data?.data ?? []) as any[];
+  const base = (data?.data ?? []) as Array<{
+    id: number;
+    title: string;
+    artist_title: string | null;
+    date_display: string;
+    date_start: number | string;
+    date_end: number | string;
+    image_id: string;
+    description?: string;
+  }>;
 
   // 1) Filtrado estricto: date_start/date_end dentro de la década
   const filtered = base.filter((x) => {
@@ -160,11 +170,13 @@ export async function artByDecade(decadeStart: number) {
     artist: (x.artist_title as string) ?? null,
     date: (x.date_display as string) ?? `${x.date_start}–${x.date_end}`,
     image: `https://www.artic.edu/iiif/2/${x.image_id}/full/843,/0/default.jpg`,
+    description: (x.description as string | undefined) ?? null, // 👈 agregado
   })) as {
     id: number;
     title: string;
     artist: string | null;
     date: string;
     image: string | null;
+    description?: string | null; // 👈 agregado
   }[];
 }

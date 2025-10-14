@@ -1,6 +1,6 @@
 "use client";
 
-import { BookOpen, Github, Image as ImageIcon, Music } from "lucide-react";
+import { BookOpen, Image as ImageIcon, Music } from "lucide-react";
 
 const nav = [
   { href: "#musica", label: "Música", icon: Music },
@@ -39,18 +39,6 @@ export default function Header() {
               );
             })}
           </nav>
-
-          {/* CTA GitHub (opcional, reemplazá el href) */}
-          <a
-            href="https://github.com/tu-usuario/museo-del-tiempo"
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm bg-cosmic-500/90 hover:bg-cosmic-500 shadow-[0_0_10px_rgba(106,90,205,0.35)] transition"
-            title="Ver repositorio"
-          >
-            <Github className="w-4 h-4" />
-            <span className="hidden sm:inline">GitHub</span>
-          </a>
         </div>
       </div>
     </header>
