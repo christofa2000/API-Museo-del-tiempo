@@ -6,7 +6,7 @@ import DecadePicker from "@/app/components/DecadePicker";
 import { artByDecade, searchRandomSongByDecade } from "@/lib/apis";
 import { decadeSummaries } from "@/lib/decadeSummaries";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Song = Awaited<ReturnType<typeof searchRandomSongByDecade>>;
 type Art = Awaited<ReturnType<typeof artByDecade>>;
@@ -27,6 +27,89 @@ export default function Page() {
   const [loadingSong, setLoadingSong] = useState(false);
   const [song, setSong] = useState<Song>(null);
   const [artworks, setArtworks] = useState<Art>([]);
+
+  // ref del video del DeLorean
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  // 1) Al montar: quedar pausado en el último frame (frame final) para usarlo como "poster"
+  useEffect(() => {
+    const el = videoRef.current;
+    if (!el) return;
+
+    const showLastFrame = () => {
+      // Ir al último frame disponible y pausar
+      if (!isFinite(el.duration) || el.duration === 0) return;
+      // Un pequeño epsilon evita que algunos navegadores no muestren el último fotograma
+      el.currentTime = Math.max(el.duration - 0.05, 0);
+      el.pause();
+    };
+
+    const onLoadedMeta = () => {
+      showLastFrame();
+    };
+
+    el.addEventListener("loadedmetadata", onLoadedMeta);
+
+    // Si ya está cargado al llegar aquí:
+    if (el.readyState >= 1) showLastFrame();
+
+    return () => {
+      el.removeEventListener("loadedmetadata", onLoadedMeta);
+    };
+  }, []);
+
+  // 2) Al cambiar de década: reproducir 1 vez y volver a pausar en el último frame
+  useEffect(() => {
+    const el = videoRef.current;
+    if (!el) return;
+
+    const reduce = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    const showLastFrame = () => {
+      if (!isFinite(el.duration) || el.duration === 0) return;
+      el.currentTime = Math.max(el.duration - 0.05, 0);
+      el.pause();
+    };
+
+    const handleEnded = () => {
+      // Al terminar, quedarnos en el último frame (sin resetear al poster)
+      showLastFrame();
+    };
+
+    el.removeEventListener("ended", handleEnded);
+    el.addEventListener("ended", handleEnded);
+
+    if (reduce) {
+      // Si el usuario prefiere menos animación: nos quedamos en el frame final
+      if (el.readyState >= 1) showLastFrame();
+      else el.addEventListener("loadedmetadata", showLastFrame, { once: true });
+      return () => el.removeEventListener("ended", handleEnded);
+    }
+
+    // Reproducir 1 vez desde el inicio
+    const playOnce = () => {
+      el.pause();
+      el.currentTime = 0;
+      // muted + playsInline ayuda con autoplay policies
+      el.muted = true;
+      // Aseguramos un repaint con requestAnimationFrame antes de play (evita glitches)
+      requestAnimationFrame(() => {
+        el.play().catch(() => {
+          // Si el autoplay es bloqueado, al menos quedamos en el frame final
+          showLastFrame();
+        });
+      });
+    };
+
+    if (el.readyState >= 1) playOnce();
+    else el.addEventListener("loadedmetadata", playOnce, { once: true });
+
+    return () => {
+      el.removeEventListener("ended", handleEnded);
+    };
+  }, [decade]);
 
   // carga por década (canción + obras)
   useEffect(() => {
@@ -67,22 +150,56 @@ export default function Page() {
 
   return (
     <section className="space-y-12 py-8 w-full overflow-x-hidden">
+      {/* ======= HERO con DeLorean a la derecha ======= */}
       <motion.header
-        className="space-y-6"
+        className="relative"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
       >
-        <div className="space-y-4">
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white text-balance">
-            🕰️ Museo del Tiempo
-          </h1>
-          <p className="max-w-3xl text-lg text-white/80 leading-relaxed text-balance">
-            Del vinilo al pixel: elegí una época y descubrí su banda sonora, sus
-            obras icónicas y el contexto que la definió
-          </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+          {/* Izquierda: título + bajada + DecadePicker */}
+          <div className="space-y-6">
+            <div className="space-y-4">
+              <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white text-balance">
+                🕰️ Museo del Tiempo
+              </h1>
+              <p className="max-w-3xl text-lg text-white/80 leading-relaxed text-balance">
+                Del vinilo al pixel: elegí una época y descubrí su banda sonora,
+                sus obras icónicas y el contexto que la definió
+              </p>
+            </div>
+            <DecadePicker value={decade} onChange={setDecade} />
+          </div>
+
+          {/* Derecha: Video controlado (quieto por defecto, 1 reproducción por cambio) */}
+          <div className="relative mx-auto md:mx-0 w-full max-w-[520px]">
+            {/* Contenedor con tamaño fijo para evitar saltos de layout */}
+            <div className="h-[260px] md:h-[300px] w-full rounded-2xl overflow-hidden ring-1 ring-white/10 shadow-xl shadow-violet-500/20 bg-black/20 backdrop-blur">
+              <video
+                ref={videoRef}
+                playsInline
+                preload="auto"
+                // mantenemos tamaño controlado; el video se contiene dentro del alto fijo
+                className="h-full w-full object-contain"
+                // debug opcional:
+                // onError={(e) => console.error("Video error:", e.currentTarget.error)}
+              >
+                <source src="/delorean.mp4" type="video/mp4" />
+                Tu navegador no soporta video HTML5.
+              </video>
+            </div>
+
+            {/* Glow sutil detrás */}
+            <div
+              className="pointer-events-none absolute inset-0 -z-10 blur-3xl opacity-30"
+              style={{
+                background:
+                  "radial-gradient(40% 40% at 70% 50%, rgba(139,92,246,0.6), transparent 70%)",
+              }}
+            />
+          </div>
         </div>
-        <DecadePicker value={decade} onChange={setDecade} />
       </motion.header>
 
       {loading ? (
@@ -198,7 +315,7 @@ export default function Page() {
               )}
             </section>
 
-            {/* 📜 Contexto histórico (resumen corto local) */}
+            {/* 📜 Contexto histórico */}
             <section id="historia" className="space-y-4">
               <h2 className="text-2xl font-bold text-white">
                 Contexto histórico
