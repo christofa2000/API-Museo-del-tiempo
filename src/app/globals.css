@@ -52,9 +52,36 @@
 }
 
 body {
-  @apply bg-cosmic-900 text-white antialiased;
+  @apply bg-black text-white antialiased; /* <- negro liso */
   font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
   color: var(--text-1);
+  position: relative;
+}
+
+position: relative;
+
+/* Asegurar que el contenido esté por encima del background de partículas */
+main,
+header {
+  position: relative;
+  z-index: 10;
+}
+
+/* Estilos para el contenedor de partículas */
+.particles-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.particles-container canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 /* Utilidades de glassmorphism */
