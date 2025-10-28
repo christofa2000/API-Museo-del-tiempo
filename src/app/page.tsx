@@ -2,7 +2,7 @@
 
 import ArtworkGrid from "@/app/components/ArtworkGrid";
 import AudioPlayer from "@/app/components/AudioPlayer";
-import DecadePicker from "@/app/components/DecadePicker";
+import MagicBento from "@/app/components/MagicBento";
 import { artByDecade, searchRandomSongByDecade } from "@/lib/apis";
 import { decadeSummaries } from "@/lib/decadeSummaries";
 import { AnimatePresence, motion } from "framer-motion";
@@ -158,7 +158,7 @@ export default function Page() {
         transition={{ duration: 0.6, ease: "easeOut" }}
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-          {/* Izquierda: título + bajada + DecadePicker */}
+          {/* Izquierda: título + bajada + Cards de décadas */}
           <div className="space-y-6">
             <div className="space-y-4">
               <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white text-balance">
@@ -169,7 +169,67 @@ export default function Page() {
                 sus obras icónicas y el contexto que la definió
               </p>
             </div>
-            <DecadePicker value={decade} onChange={setDecade} />
+            {/* Magic Bento para seleccionar década */}
+            <MagicBento
+              cards={[1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010].map(
+                (year) => ({
+                  id: `decade-${year}`,
+                  title: "",
+                  year: year,
+                  gradient:
+                    year === decade
+                      ? "from-cosmic-500/40 to-purple-600/40"
+                      : "from-violet-500/10 to-purple-600/10",
+                  icon:
+                    year === 1940
+                      ? "✈️"
+                      : year === 1950
+                      ? "🎸"
+                      : year === 1960
+                      ? "✌️"
+                      : year === 1970
+                      ? "🎤"
+                      : year === 1980
+                      ? "🎮"
+                      : year === 1990
+                      ? "🌐"
+                      : year === 2000
+                      ? "📱"
+                      : "🚀",
+                  className:
+                    year === decade
+                      ? "ring-2 ring-cosmic-500/50 scale-105"
+                      : "",
+                  content: (
+                    <div className="flex flex-col items-center justify-center h-full gap-1">
+                      <div className="text-3xl">
+                        {year === 1940
+                          ? "✈️"
+                          : year === 1950
+                          ? "🎸"
+                          : year === 1960
+                          ? "✌️"
+                          : year === 1970
+                          ? "🎤"
+                          : year === 1980
+                          ? "🎮"
+                          : year === 1990
+                          ? "🌐"
+                          : year === 2000
+                          ? "📱"
+                          : "🚀"}
+                      </div>
+                      <div className="text-sm font-bold text-white">{year}</div>
+                    </div>
+                  ),
+                })
+              )}
+              onCardClick={(card) => {
+                const year = card.year;
+                if (year) setDecade(year);
+              }}
+              columns={{ base: 2, sm: 4, lg: 4 }}
+            />
           </div>
 
           {/* Derecha: Video controlado (quieto por defecto, 1 reproducción por cambio) */}

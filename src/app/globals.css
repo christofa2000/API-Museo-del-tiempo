@@ -52,36 +52,17 @@
 }
 
 body {
-  @apply bg-black text-white antialiased; /* <- negro liso */
+  background: linear-gradient(to bottom, #1a0d33, #0a0618);
   font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
   color: var(--text-1);
   position: relative;
 }
 
-position: relative;
-
-/* Asegurar que el contenido esté por encima del background de partículas */
+/* Asegurar que el contenido esté por encima */
 main,
 header {
   position: relative;
   z-index: 10;
-}
-
-/* Estilos para el contenedor de partículas */
-.particles-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  pointer-events: none;
-}
-
-.particles-container canvas {
-  display: block;
-  width: 100%;
-  height: 100%;
 }
 
 /* Utilidades de glassmorphism */
@@ -181,4 +162,9 @@ body {
   100% {
     transform: translateX(10%);
   }
+}
+
+/* Border grueso custom para Magic Bento */
+.border-3 {
+  border-width: 3px;
 }

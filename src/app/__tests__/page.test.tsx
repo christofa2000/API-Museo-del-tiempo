@@ -63,13 +63,10 @@ describe.skip("Page Integration", () => {
 
     // Verificar que se muestra el título principal
     expect(screen.getByText("Museo del Tiempo")).toBeInTheDocument();
-    expect(
-      screen.getByText(/explorá arte, historia y música/i)
-    ).toBeInTheDocument();
 
-    // Verificar que se muestra el DecadePicker
-    expect(screen.getByRole("button", { name: "1980s" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "1990s" })).toBeInTheDocument();
+    // Verificar que se muestran las cards de décadas
+    expect(screen.getByText("1940")).toBeInTheDocument();
+    expect(screen.getByText("1950")).toBeInTheDocument();
 
     // Esperar a que se cargue el contenido
     await waitFor(() => {
@@ -103,9 +100,11 @@ describe.skip("Page Integration", () => {
       expect(screen.getByText("Test Song")).toBeInTheDocument();
     });
 
-    // Cambiar a los 1990s
-    const ninetiesButton = screen.getByRole("button", { name: "1990s" });
-    await user.click(ninetiesButton);
+    // Cambiar a los 1990s - buscar la card con el año 1990
+    const ninetiesCard = screen.getByText("1990").closest("div")?.parentElement;
+    if (ninetiesCard) {
+      await user.click(ninetiesCard);
+    }
 
     // Verificar que se actualiza el título de la sección
     await waitFor(() => {
@@ -130,8 +129,10 @@ describe.skip("Page Integration", () => {
     render(<Page />);
 
     // Cambiar de década
-    const ninetiesButton = screen.getByRole("button", { name: "1990s" });
-    await user.click(ninetiesButton);
+    const ninetiesCard = screen.getByText("1990").closest("div")?.parentElement;
+    if (ninetiesCard) {
+      await user.click(ninetiesCard);
+    }
 
     // Verificar que se muestra el estado de carga
     expect(

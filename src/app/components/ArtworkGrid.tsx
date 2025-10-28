@@ -130,7 +130,7 @@ export default function ArtworkGrid({
 
       <ul
         key={mixKey} // re-render para animar set
-        className="grid grid-cols-1 gap-4 md:grid-cols-3"
+        className="grid grid-cols-1 gap-3 md:grid-cols-3"
       >
         <AnimatePresence mode="popLayout">
           {displayed.map((a, idx) => (
@@ -141,8 +141,31 @@ export default function ArtworkGrid({
               animate="animate"
               exit="exit"
               transition={{ duration: 0.22 }}
-              className="group overflow-hidden rounded-2xl glass hover:glass-2 transition-all duration-300"
+              className="relative group overflow-hidden rounded-xl glass transition-all duration-300 border-2 border-white/10 group-hover:border-white/30"
             >
+              {/* Efecto de brillo animado */}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 pointer-events-none">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+              </div>
+
+              {/* Glow effect mejorado - mucho más violeta */}
+              <div
+                className="absolute inset-0 opacity-0 group-hover:opacity-80 blur-2xl transition-opacity duration-300 pointer-events-none rounded-xl z-0"
+                style={{
+                  background:
+                    "radial-gradient(circle at center, rgba(124,107,255,0.8), rgba(156,99,206,0.4), transparent)",
+                }}
+              />
+
+              {/* Glow adicional */}
+              <div
+                className="absolute inset-0 opacity-0 group-hover:opacity-60 blur-3xl transition-opacity duration-300 pointer-events-none rounded-xl z-0"
+                style={{
+                  background:
+                    "radial-gradient(circle at center, var(--color-cosmic-400), transparent)",
+                }}
+              />
+
               <button
                 type="button"
                 onClick={() => setSelectedIndex(idx)}

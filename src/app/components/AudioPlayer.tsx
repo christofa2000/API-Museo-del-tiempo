@@ -93,96 +93,121 @@ export default function AudioPlayer({ src, title, artist, artUrl }: Props) {
 
   return (
     <motion.div
-      className="flex items-center gap-4 rounded-2xl glass p-4 w-full min-w-0"
+      className="relative flex items-center gap-4 rounded-xl glass p-4 w-full min-w-0 group overflow-hidden border-2 border-white/10 group-hover:border-white/30"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      {/* Artwork */}
-      <div className="relative">
-        {artUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={artUrl}
-            alt={title ?? "artwork"}
-            className="w-16 h-16 rounded-xl object-cover shadow-lg"
-            loading="lazy"
-          />
-        ) : (
-          <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-cosmic-500/20 to-cosmic-600/20 flex items-center justify-center">
-            <Volume2 className="w-6 h-6 text-cosmic-300" />
-          </div>
-        )}
-        {playing && (
-          <motion.div
-            className="absolute inset-0 rounded-xl bg-cosmic-500/20"
-            animate={{ opacity: [0.5, 1, 0.5] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-          />
-        )}
+      {/* Efecto de brillo animado */}
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0 pointer-events-none">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
       </div>
 
-      {/* Info */}
-      <div className="flex-1 min-w-0">
-        <div className="text-sm text-white/70 truncate">{artist ?? "—"}</div>
-        <div className="font-semibold text-white truncate">
-          {title ?? "Sin pista"}
+      {/* Glow effect mejorado - mucho más violeta */}
+      <div
+        className="absolute inset-0 opacity-0 group-hover:opacity-80 blur-2xl transition-opacity duration-300 pointer-events-none rounded-xl z-0"
+        style={{
+          background:
+            "radial-gradient(circle at center, rgba(124,107,255,0.8), rgba(156,99,206,0.4), transparent)",
+        }}
+      />
+
+      {/* Glow adicional */}
+      <div
+        className="absolute inset-0 opacity-0 group-hover:opacity-60 blur-3xl transition-opacity duration-300 pointer-events-none rounded-xl z-0"
+        style={{
+          background:
+            "radial-gradient(circle at center, var(--color-cosmic-400), transparent)",
+        }}
+      />
+
+      <div className="relative z-10 flex items-center gap-4 w-full min-w-0">
+        {/* Artwork */}
+        <div className="relative">
+          {artUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={artUrl}
+              alt={title ?? "artwork"}
+              className="w-16 h-16 rounded-xl object-cover shadow-lg"
+              loading="lazy"
+            />
+          ) : (
+            <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-cosmic-500/20 to-cosmic-600/20 flex items-center justify-center">
+              <Volume2 className="w-6 h-6 text-cosmic-300" />
+            </div>
+          )}
+          {playing && (
+            <motion.div
+              className="absolute inset-0 rounded-xl bg-cosmic-500/20"
+              animate={{ opacity: [0.5, 1, 0.5] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            />
+          )}
         </div>
 
-        {/* Barra de progreso */}
-        {src && duration > 0 && (
-          <div className="mt-2 space-y-1">
-            <div className="h-1 bg-white/10 rounded-full overflow-hidden">
-              <motion.div
-                className="h-full bg-cosmic-500 rounded-full"
-                style={{ width: `${progress}%` }}
-                transition={{ duration: 0.1 }}
-              />
-            </div>
-            <div className="flex justify-between text-xs text-white/50">
-              <span>
-                {Math.floor(currentTime / 60)}:
-                {(currentTime % 60).toFixed(0).padStart(2, "0")}
-              </span>
-              <span>
-                {Math.floor(duration / 60)}:
-                {(duration % 60).toFixed(0).padStart(2, "0")}
-              </span>
-            </div>
+        {/* Info */}
+        <div className="flex-1 min-w-0">
+          <div className="text-sm text-white/70 truncate">{artist ?? "—"}</div>
+          <div className="font-semibold text-white truncate">
+            {title ?? "Sin pista"}
           </div>
-        )}
 
-        <audio
-          ref={audioRef}
-          src={src ?? undefined}
-          preload="none"
-          playsInline
-          controls={false}
-          webkit-playsinline="true"
-        />
-      </div>
+          {/* Barra de progreso */}
+          {src && duration > 0 && (
+            <div className="mt-2 space-y-1">
+              <div className="h-1 bg-white/10 rounded-full overflow-hidden">
+                <motion.div
+                  className="h-full bg-cosmic-500 rounded-full"
+                  style={{ width: `${progress}%` }}
+                  transition={{ duration: 0.1 }}
+                />
+              </div>
+              <div className="flex justify-between text-xs text-white/50">
+                <span>
+                  {Math.floor(currentTime / 60)}:
+                  {(currentTime % 60).toFixed(0).padStart(2, "0")}
+                </span>
+                <span>
+                  {Math.floor(duration / 60)}:
+                  {(duration % 60).toFixed(0).padStart(2, "0")}
+                </span>
+              </div>
+            </div>
+          )}
 
-      {/* Botón de play/pause */}
-      <motion.button
-        disabled={!src || loading}
-        onClick={handlePlayPause}
-        className="rounded-full bg-cosmic-500 p-3 transition-all duration-200 hover:bg-cosmic-600 disabled:opacity-50 disabled:cursor-not-allowed focus-ring shadow-[var(--glow)]"
-        aria-label={playing ? "Pausar" : "Reproducir"}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-      >
-        {loading ? (
-          <motion.div
-            className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
-            animate={{ rotate: 360 }}
-            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          <audio
+            ref={audioRef}
+            src={src ?? undefined}
+            preload="none"
+            playsInline
+            controls={false}
+            webkit-playsinline="true"
           />
-        ) : playing ? (
-          <Pause className="w-5 h-5 text-white" />
-        ) : (
-          <Play className="w-5 h-5 text-white" />
-        )}
-      </motion.button>
+        </div>
+
+        {/* Botón de play/pause */}
+        <motion.button
+          disabled={!src || loading}
+          onClick={handlePlayPause}
+          className="rounded-full bg-cosmic-500 p-3 transition-all duration-200 hover:bg-cosmic-600 disabled:opacity-50 disabled:cursor-not-allowed focus-ring shadow-[var(--glow)]"
+          aria-label={playing ? "Pausar" : "Reproducir"}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          {loading ? (
+            <motion.div
+              className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
+              animate={{ rotate: 360 }}
+              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+            />
+          ) : playing ? (
+            <Pause className="w-5 h-5 text-white" />
+          ) : (
+            <Play className="w-5 h-5 text-white" />
+          )}
+        </motion.button>
+      </div>
     </motion.div>
   );
 }

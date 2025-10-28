@@ -1,6 +1,7 @@
 // src/lib/decadeSummaries.ts
 export const decadeSummaries: Record<number, string> = {
-  1950: "Tras la Segunda Guerra Mundial, el mundo entró en la Guerra Fría. EE. UU. y la URSS lideraron un orden bipolar mientras Europa se reconstruía. Crecieron el rock ’n’ roll, la televisión y el consumo masivo.",
+  1940: "Década dominada por la Segunda Guerra Mundial (1939-1945), que transformó el mundo. Surgieron el jazz, el swing, el cine clásico de Hollywood y avances tecnológicos como la bomba atómica. El mundo quedó dividido en bloques.",
+  1950: "Tras la Segunda Guerra Mundial, el mundo entró en la Guerra Fría. EE. UU. y la URSS lideraron un orden bipolar mientras Europa se reconstruía. Crecieron el rock 'n' roll, la televisión y el consumo masivo.",
   1960: "Década de revolución cultural y protestas sociales. La carrera espacial culminó con el hombre en la Luna. Nacieron los movimientos por los derechos civiles y el hippismo.",
   1970: "Años de crisis energética y tensiones políticas. La música disco, el punk y el rock dominaron la cultura. Se avanzó en tecnología y se consolidó la computación personal.",
   1980: "Era de modernización tecnológica y cultura pop global. Nacieron los videojuegos, MTV y los primeros ordenadores domésticos. Se intensificó la Guerra Fría y comenzó la globalización.",
